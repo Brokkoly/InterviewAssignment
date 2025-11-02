@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { isNullOrUndefined } from "util";
-
 
 export type Advocate = {
   firstName: string;
@@ -29,13 +27,7 @@ export default function Home() {
   }, []);
 
   const onChange = (event: any) => {
-    const searchTerm = event.target.value;
-
-    if(document === undefined || document === null){
-      return;
-    }
-
-    document.getElementById("search-term").innerHTML = searchTerm;
+    const searchTerm = event?.target?.value ?? "";
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate: Advocate) => {
@@ -61,12 +53,8 @@ export default function Home() {
     <main style={{ margin: "24px" }}>
       <h1>Solace Advocates</h1>
       <br />
-      <br />
       <div>
         <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
         <input style={{ border: "1px solid black" }} onChange={onChange} />
         <button onClick={onClick}>Reset Search</button>
       </div>
