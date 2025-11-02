@@ -18,13 +18,9 @@ export async function GET(request: NextRequest) {
   };
   var searchValue = searchParams.get("searchValue") ?? "";
 
-  console.log({searchValue});
+  console.log({searchValue, start, take});
 
   var data = advocateData as Advocate[];
-
-  if (start != 0) {
-    data = data.slice(start);
-  }
 
   if (searchValue != "") {
     //Real code would look similar except it would be a WHERE query with OR statements
@@ -36,7 +32,17 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  return Response.json({ data });
+  //var totalNum = db.count().from(advocates);
+  var totalCount = data.length;
+
+  if (start != 0) {
+    data = data.slice(start);
+  }
+  if (take > 0) {
+    data = data.slice(0, take);
+  }
+
+  return Response.json({ advocates: data, totalCount: totalCount });
 }
 
 function AdvocateHasSearchValue(
@@ -44,12 +50,12 @@ function AdvocateHasSearchValue(
   searchTerm: string
 ): boolean {
   return (
-    advocate.firstName.includes(searchTerm) ||
-    advocate.lastName.includes(searchTerm) ||
-    advocate.city.includes(searchTerm) ||
-    advocate.degree.includes(searchTerm) ||
+    advocate.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    advocate.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    advocate.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    advocate.degree.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ArrayHasOneOrMoreMatches(advocate.specialties, searchTerm) ||
-    advocate.yearsOfExperience.toString().includes(searchTerm)
+    advocate.yearsOfExperience.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 }
 
@@ -58,7 +64,7 @@ function ArrayHasOneOrMoreMatches(
   searchTerm: string
 ): boolean {
   for (var i = 0; i < array.length; i++) {
-    if (array[i] != "" && array[i].includes(searchTerm)) {
+    if (array[i] != "" && array[i].toLowerCase().includes(searchTerm.toLowerCase())) {
       return true;
     }
   }

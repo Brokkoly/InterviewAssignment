@@ -11,4 +11,18 @@
 - Took a look at drizzle's website and I don't have time to be figuring that out since I already have the database.
   - I'll put in what I think would be correct later in comments
 
-- Like all good server optimizations it requires UI changes
+- Like all good server optimizations it requires UI changes. Fixing up the UI to use useState.
+
+#### Make UI Look Better
+- Adding pagination for performance. Page size can be determined later.
+- Returning count so that we know how many pages we have
+
+
+
+#### Todos that I won't have time for:
+- Don't send the search value every time somebody types. Take a beat for them to finish typing before sending the search. This reduces server load.
+- Continuation tokens for better pagination
+- In 2 hours I didn't really have time to get myself less rusty on css and how to make something look good.
+  - Specialities seems too large, so my ideal might be having expandable rows to list the specialities.
+  - It would also probably be good to have multiple filters, and sortable columns, so that the user can filter on Tra (looking for trauma) and not get a doctor with the name travis.
+- Need to remember how to do case invariant string matching in javascript.
