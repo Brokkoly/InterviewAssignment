@@ -10,28 +10,36 @@ export type Advocate = {
   specialties: string[];
   yearsOfExperience: number;
   phoneNumber: number;
-}
+};
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(100);
+  const numPerPage = 5;
+
+  const skip = () => {
+    return numPerPage * page;
+  };
 
   useEffect(() => {
     console.log("fetching advocates...");
 
-    fetch(`/api/advocates?searchValue=${searchTerm}`).then((response) => {
+    fetch(
+      `/api/advocates?searchValue=${searchTerm}&take=${numPerPage}&start=${skip()}`
+    ).then((response) => {
       response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
+        setFilteredAdvocates(jsonResponse.advocates);
+        setTotalCount(jsonResponse.totalCount);
       });
     });
-  }, [searchTerm]);
+  }, [searchTerm, page]);
 
-  const onReset = ()=>{
-    setSearchTerm('');
-  }
+  const onReset = () => {
+    setSearchTerm("");
+  };
 
   return (
     <main style={{ margin: "24px" }}>
@@ -39,12 +47,27 @@ export default function Home() {
       <br />
       <div>
         <p>Search</p>
-        <input style={{ border: "1px solid black" }} onChange={(e)=>setSearchTerm(e.target.value)} value={searchTerm} />
-        <button onClick={onReset}>Reset Search</button>
+        <input
+          style={{ border: "1px solid black" }}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
+          placeholder="Search"
+        />
+        <button
+          style={{
+            width: "150px",
+            height: "30px",
+            border: "1px solid black",
+            marginLeft: "5px",
+          }}
+          onClick={onReset}
+        >
+          Reset Search
+        </button>
       </div>
       <br />
       <br />
-      <table>
+      <table className="table-auto">
         <thead>
           <tr>
             <th>First Name</th>
@@ -76,6 +99,22 @@ export default function Home() {
           })}
         </tbody>
       </table>
+      <div>
+        <button
+          style={{ width: "150px", height: "30px", border: "1px solid black" }}
+          onClick={(e) => setPage(Math.max(page - 1, 0))}
+          disabled={page === 0}
+        >
+          Previous Page
+        </button>
+        <button
+          style={{ width: "150px", height: "30px", border: "1px solid black" }}
+          onClick={(e) => setPage(page + 1)}
+          disabled={page === Math.ceil(totalCount / numPerPage) - 1}
+        >
+          Next Page
+        </button>
+      </div>
     </main>
   );
 }
