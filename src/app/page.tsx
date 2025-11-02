@@ -8,8 +8,8 @@ export type Advocate = {
   city: string;
   degree: string;
   specialties: string[];
-  yearsOfExperience: string;
-  phoneNumber: string;
+  yearsOfExperience: number;
+  phoneNumber: number;
 }
 
 export default function Home() {
@@ -37,7 +37,7 @@ export default function Home() {
         advocate.city.includes(searchTerm) ||
         advocate.degree.includes(searchTerm) ||
         advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.phoneNumber.toString().includes(searchTerm)
       );
     });
 
